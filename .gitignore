@@ -17,6 +17,7 @@ node_modules/
 
 # not required Directories
 temp/
+Books/
 week-1/
 week-2/
 week-3/
