@@ -175,7 +175,7 @@ app.use((err, req, res, next) => {
   res.status(500);
   res.json({
     message: 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' ? err.stack : {}
+    error: (process.env.NODE_ENV) === 'development' ? err.stack : {}
   });
 });
 
