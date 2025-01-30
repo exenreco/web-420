@@ -5,180 +5,148 @@
  *
  * File: app.js
  *
- * Description: Initial setup of In-N-Out-Books web server
+ * Description: In-N-Out-Books web server
  */
 
 "use strict";
 
-const
-
-// Import Express
-
-express = require('express'),
-
-// Custom template
-
-template = require('../src/template.js'),
-
-// Instance of express
-
-app = express(),
-
-// Intro Block
-
-intro = (() => `
-  <section class="section">
-    <h2>Introduction</h2>
-    <p>
-      Manage your book collection with ease!
-      Whether you're an avid reader or a book club organizer,
-      our platform caters to your needs.
-    </p>
-  </section>
-`)(),
-
-// Top Selling Block
-
-topSellingBooks = (() => `
-  <section class="section">
-    <h2>Top Selling Books</h2>
-    <ul>
-      <li>The Great Gatsby</li>
-      <li>To Kill a Mockingbird</li>
-      <li>1984 by George Orwell</li>
-    </ul>
-  </section>
-`)(),
-
-// operations Block
-
-operationsHrs = (() => `
-  <section class="section">
-    <h2>Hours of Operation</h2>
-    <p>Monday - Friday: 9 AM - 6 PM</p>
-    <p>Saturday - Sunday: 10 AM - 4 PM</p>
-  </section>
-`)(),
-
-// Contact Block
-
-contactInfo = (() => `
-  <section class="section">
-    <h2>Contact Information</h2>
-    <p>Email: support@innoutbooks.com</p>
-    <p>Phone: (123) 456-7890</p>
-  </section>
-`)(),
-
 /**
- * HOME PAGE (Const)
- *
- * generates a string of html content based on the given params.
- *
- * @see ./template.js
- *
- * @since version 0.0.1
+ * Module dependencies.
  */
 
-homePage = template('In-N-Out-Books', {
+// Import Express: use to create our server
+import express from "express";
 
-  // enable html 5 support
-  'html5': true,
+import path from "path";
 
-  // generate page header title
-  'page': {
-    title:'Home',
-    hasSiteTitle:true
-  },
+import favicon from "serve-favicon";
 
-  // generate meta tags
-  'meta': [
-    { charset: "UTF-8" },
-    { name:"viewport", content: `"width=device-width, initial-scale=1.0"`}
-  ],
+// Import books collection
+import books from "../database/books.js";
 
-  // generate style tags
-  'styles': [
-    {
-      atts: { id: 'home-styles', type: 'text/css', rel: 'stylesheet' },
-      content: (() => `
-        body {
-          color: #333;
-          background: whitesmoke;
-        }
-        .home-content {
-          width: 98%;
-          margin: auto;
-          display: block;
-          position: relative;
-        }
-        .section {
-          padding-bottom: 5px;
-          margin: 0px auto 0px auto;
-          border-bottom: 1px dashed #d3d3d3;
-        }
-        .section:last-child {
-          border-bottom: none;
-        }
-        .section > h2 {
-          text-decoration: underline;
-        }
-        .section > p {
-          font-style: italic;
-          text-indent: 12pt;
-        }
-      `)()
-    }
-  ],
+// Import the site's homepage template
+import homePage from "./templates/home-page.js";
 
-  // generate script tag
-  'scripts': [
-    {
-      atts: {id:'home-script', defer:true, type:'text/javaScript'},
-      content: 'console.log("Welcome!");'
-    }
-  ],
+const
+/**
+ * APP
+ *
+ * Handles creating express server instance
+ *
+ * @Dev Exenreco Bell
+ *
+ * @Date January 22, 2025
+ *
+ * @Since version 0.0.2
+ */
+app = express(),
 
-  // generate body attributes and contents
-  'body': {
-    atts: { id: "home-page", class: 'page home' },
-    content: (() => `
-      <header>
-        <h1>Welcome to In-N-Out-Books</h1>
-      </header>
-      <main class="home-content">
-        ${intro}
-        ${topSellingBooks}
-        ${operationsHrs}
-        ${contactInfo}
-      </main>
-    `)()
-  }
+/**
+ * API ROUTER
+ *
+ * Handles routes for the book API Endpoint
+ *
+ * @Dev Exenreco Bell
+ *
+ * @Date January 29, 2025
+ *
+ * @Since version 0.0.2
+ */
+bookApiRouter = express.Router();
 
-});
 
-// Route for the root URL
+// parse incoming JSON data from HTTP request body
+app.use(express.json());
 
+
+/**
+ *  IN-N-Out-Books Favicon Setup and static files setup
+ */
+
+// Serve static files from ./src/public
+app.use(
+  express.static(path.join(process.cwd(), "src", "public"))
+);
+
+// Serve app favicon
+app.use(
+  favicon(path.join(process.cwd(), "src", "public/images/", "favicon.ico"))
+);
+
+
+/**
+ * IN-N-Out-Books -> Home page setup
+ */
+
+// handles [Homepage] -> Route for the root URL
 app.get('/', (req, res) => {
   res.send( homePage.get_template() );
 });
 
-// 404 Error Handling Middleware
 
-app.use((req, res, next) => {
-  res.status(404).send('<h1>404 - Page Not Found</h1>');
+/**
+ * IN-N-Out-Books -> books api setup
+ */
+
+// Handles [api/books] -> GET all books
+bookApiRouter.get("/books", async (req, res) => {
+  try {
+    const allBooks = await books.find();
+    res.json(allBooks);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Handles [api/books/:id] -> GET a single book by ID
+bookApiRouter.get("/books/:id", async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.id, 10);
+
+    if (isNaN(bookId)) {
+      return res.status(400).json({
+        error: "Invalid book ID, 'ID' must be a number."
+      });
+    }
+
+    const book = await books.findOne({ id: bookId });
+
+    if (!book) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    res.json(book);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+/**
+ * IN-N-Out-Books -> Mounts
+ */
+
+// Mount the API router under /api
+app.use("/api", bookApiRouter);
+
+
+
+/**
+ * IN-N-Out-Books -> Middlewares
+ */
+
+// 404 Error Handling Middleware
+app.use((req, res) => {
+  res.status(404).send("<h1>404 - Page Not Found</h1>");
 });
 
 // 500 Error Handling Middleware
-
 app.use((err, req, res, next) => {
-  res.status(500);
-  res.json({
-    message: 'Internal Server Error',
-    error: (process.env.NODE_ENV) === 'development' ? err.stack : {}
+  res.status(500).json({
+    message: "Internal Server Error",
+    error: process.env.NODE_ENV === "development" ? err.stack : {},
   });
 });
 
 // Export the Express application
-
-module.exports = app;
+export default app;

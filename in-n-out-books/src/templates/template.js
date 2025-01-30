@@ -1,3 +1,13 @@
+/**
+ * Name: Exenreco Bell
+ *
+ * Date: January 24, 2025
+ *
+ * File: template.js
+ *
+ * Description: Handles creating html page templates
+ */
+
 "use strict";
 
 /**
@@ -64,7 +74,7 @@
  * @since version: 0.0.1
  */
 
-const template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
+const Template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
 
   // Notify dev in console that a site name is required, when site title is invalid
 
@@ -246,7 +256,7 @@ const template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
   mapHtml.get('meta').forEach(meta => {
     metaTags += '<meta ';
     for( const key in meta ) {
-      if( meta.hasOwnProperty(key) ) metaTags += `${key}=${meta[key]} `;
+      if( meta.hasOwnProperty(key) ) metaTags += `${key}="${meta[key]}" `;
     }
     metaTags += '>';
   });
@@ -255,15 +265,24 @@ const template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
   // Generate style tags
 
   mapHtml.get('styles').forEach(style => {
-    styleTags += '<style ';
+    styleTags += ( style.atts.hasOwnProperty('href') && style.atts.href !== '')
+    ? // use link style sheet
+      '<link '
+    : // uses style tag
+      '<style '
+    ;
+
     for( const key in style['atts']) {
       ( style.atts.hasOwnProperty(key) )
-      ? styleTags += `${key}=${style.atts[key]} `
+      ? styleTags += `${key}="${style.atts[key]}" `
       : ''
     }
-    styleTags += `>`;
-    styleTags += `${style.content}`;
-    styleTags += `</style>`;
+
+    styleTags += ( style.atts.hasOwnProperty('href') && style.atts.href !== '')
+    ? // close link tag
+      `>`
+    : // close style tag
+      `>${style.content}</style>`;
   });
 
 
@@ -275,7 +294,7 @@ const template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
       if( script.atts.hasOwnProperty(key) ) {
         ( script[key] === '' )
         ? scriptTags += `${key} `
-        : scriptTags += `${key}=${script.atts[key]} `;
+        : scriptTags += `${key}="${script.atts[key]}" `;
       }
     }
     scriptTags += `>${script.content}</script>`;
@@ -286,7 +305,7 @@ const template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
 
   for( const key in mapHtml.get('body').atts) {
     if( mapHtml.get('body').atts.hasOwnProperty(key) ) {
-      bodyAttributes += `${key}=${mapHtml.get('body').atts[key]} `
+      bodyAttributes += `${key}="${mapHtml.get('body').atts[key]}" `
     }
   };
 
@@ -321,4 +340,4 @@ const template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
 };
 
 // export template module
-module.exports = template;
+export default Template;

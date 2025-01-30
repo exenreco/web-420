@@ -1,0 +1,304 @@
+:root {
+  --page-text: #333;
+  --header-text: #fff;
+  --footer-text: red;
+
+  --page-links: red;
+  --header-links: #fff;
+  --footer-links: #fff;
+  --header-links-active: blue;
+
+  --page-links-hovered: blue;
+  --footer-links-hovered: blue;
+  --header-links-hovered: blue;
+
+  --site-background: #e0e1dd;
+  --page-background: rgba(255, 255, 255, 0.08);
+  --header-background: #0d1b2a;
+  --footer-background: #1b263b;
+}
+
+
+/* Style rules governing all pages
+---------------------------------------------------*/
+
+* {
+  font-family: 'Courier New', Courier, monospace;
+  font-style: normal;
+}
+i{
+  font-style: italic;
+}
+
+h1 {
+  font-size: 2.8rem;
+  font-weight: bolder;
+}
+
+h2, h3, h4, h5, h6 {
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 2.4rem;
+  line-height: 2.6rem;
+}
+
+h3{
+  font-size: 2rem;
+  line-height: 2.2rem;
+}
+
+h4{
+  font-size: 1.6rem;
+  line-height: 1.8rem;
+}
+
+h5{
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+}
+
+h6{
+  font-size: 0.8rem;
+  line-height: 1rem;
+}
+
+p{
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+}
+
+small{
+  font-size: 0.8rem;
+}
+section{
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+}
+
+div{
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+}
+
+html > .page
+{
+  display: block;
+  position: relative;
+  color: var(--page-text, #333);
+  background-color: var(--site-background, #fff);
+}
+
+
+/* Style rules governing site header
+---------------------------------------------------*/
+html > .page .site-header {
+  padding: 5px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  position: relative;
+  flex-direction: row;
+  justify-items: left;
+  justify-content: left;
+  color: var(--header-text, #fff);
+  background-color: var(--header-background, #333);
+  border-bottom: 5px solid #415a77;
+}
+html > .page .site-header .info,
+html > .page .site-header .header-nav {
+  padding: 5px;
+  display: flex;
+  flex: 1 1 auto;
+}
+html > .page > .site-header .info {
+  width: 320px;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+}
+html > .page .site-header .header-nav {
+  width: calc(100% - 320px);
+  align-items: center;
+  justify-content: end;
+  justify-items: center;
+}
+
+
+/* Style rules governing site info in site header
+---------------------------------------------------*/
+html > .page .site-header .info .logo {
+  width: 68px;
+  height: 68px;
+  margin: auto;
+  padding: 5px;
+  display: flex;
+  flex: 1 1 auto;
+  position: relative;
+  flex-direction: row;
+  justify-items: center;
+  justify-content: center;
+}
+html > .page .site-header .info .logo img {
+  width: 64px;
+  height: 64px;
+  margin: auto;
+}
+html > .page > .site-header .info .text {
+  display: block;
+  position: relative;
+  padding: 5px;
+  width: calc( 100% - 64px );
+}
+html > .page > .site-header .info .text .hidden {
+  display:  none;
+  visibility: hidden;
+}
+html > .page > .site-header .info .text .site-link,
+html > .page > .site-header .info .text .site-link:link,
+html > .page > .site-header .info .text .site-link:visited,
+html > .page > .site-header .info .text .site-link:active {
+  margin: auto;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--header-links, #fff);
+}
+html > .page > .site-header .info .text .site-link:hover {
+  color: var(--header-links-hovered, blue);
+}
+html > .page > .site-header .info .text .site-link .site-name {
+  font-size: 1.6rem;
+  font-weight: bolder;
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+html > .page > .site-header .info .text .site-link .tagline,
+html > .page > .site-header .info .text .site-link .tagline i {
+  font-size: 1rem;
+  font-weight: bold;
+  font-style: normal;
+  line-height: 1.8rem;
+}
+
+/* Style rules governing site header nav
+---------------------------------------------------*/
+html > .page .site-header .header-nav .nav-link,
+html > .page .site-header .header-nav .nav-link:link,
+html > .page .site-header .header-nav .nav-link:visited,
+html > .page .site-header .header-nav .nav-link:active {
+  font-weight: bold;
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
+  text-transform: uppercase;
+  color: var(--header-links, #fff);
+}
+html > .page .site-header .header-nav .nav-link.active,
+html > .page .site-header .header-nav .nav-link.active:link,
+html > .page .site-header .header-nav .nav-link.active:visited,
+html > .page .site-header .header-nav .nav-link.active:active{
+  border-bottom: 2px solid var(--header-links-active, red);
+}
+html > .page .site-header .header-nav .nav-link:hover {
+  color: var(--header-links-hovered, blue);
+}
+
+
+/* Style rules governing site footer
+---------------------------------------------------*/
+html > .page.home .site-footer {
+  height: auto;
+  min-height: 85px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-items: center;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--footer-text, #fff);
+  background-color: var(--footer-background, #333);
+}
+html > .page.home .site-footer .copyright {
+  text-align: center;
+}
+html > .page.home .site-footer a,
+html > .page.home .site-footer a:link,
+html > .page.home .site-footer a:visited,
+html > .page.home .site-footer a:active {
+  text-decoration: none;
+  color: var(--footer-links, #fff);
+}
+html > .page.home .site-footer a:hover {
+  color: var(--footer-links-hovered, blue);
+}
+
+
+/* Style rules governing all pages
+---------------------------------------------------*/
+html > .page.home .site-content {
+  margin: auto;
+  height: auto;
+  width: 1080px;
+  color: var(--page-text, #333);
+  background-color: var(--page-background, rgba(33, 33, 33, 0.05));
+}
+html > .page.home .site-content a,
+html > .page.home .site-content a:link,
+html > .page.home .site-content a:visited,
+html > .page.home .site-content a:active {
+  color: var(--page-links, blue);
+}
+html > .page.home .site-content a:hover {
+  color: var(--page-links-hovered, red);
+}
+html > .page.home .site-content .page-section {
+  padding: 12px;
+  margin-bottom: 18px;
+}
+html > .page.home .site-content .page-section .title {
+  font-size: 1.2rem;
+  text-decoration: underline;
+}
+html > .page.home .site-content  {
+  margin-bottom: 40px;
+}
+
+
+/* Style rules governing home page
+---------------------------------------------------*/
+html > .page.home .splash-screen {
+  margin: auto;
+  height: 50vh;
+  display: flex;
+  width: inherit;
+  flex: 1 1 auto;
+  position: relative;
+  align-items: center;
+  justify-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(33, 33, 33, 0.25);
+}
+html > .page.home .splash-screen .about {
+  width: 60%;
+  height: auto;
+  display: block;
+  position: relative;
+}
+html > .page.home .splash-screen .about .title {
+  text-align: center;
+  line-height: 2.8rem;
+  margin-bottom: 12px;
+}
+html > .page.home .splash-screen .about .info {
+  font-size: 2rem;
+  line-height: 2rem;
+  text-align: center;
+}
+html > .page.home .site-content {
+  padding-top: 14px;
+  margin-bottom: 40px;
+}
