@@ -17,6 +17,9 @@
 /** Module Dependencies
  ** ------------------------------------------------------------------------------- */
 
+// Import ajv for JSON Schema validation
+import Ajv from 'ajv';
+
 // Import Path
 import path from "path";
 
@@ -58,6 +61,10 @@ const
 app = express(),
 
 
+// Initialize ajv instance
+ajv = new Ajv(),
+
+
 /**
  * Book API ROUTER
  *
@@ -69,13 +76,39 @@ app = express(),
  *
  * @Since version 0.0.2
  */
-apiRouter = express.Router();
+apiRouter = express.Router(),
+
+/**
+ *
+ */
+usersSchema = {
+  type: 'object',
+  properties: {
+    answers: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          answer: { type: 'string' }
+        },
+        required: ['answer'],
+        additionalProperties: false
+      },
+      minItems: 1 // at least one answer is required
+    }
+  },
+  required: ['answers'],
+  additionalProperties: false
+};
 
 
 
 
-// get server response as json
+// Middleware to parse JSON requests
 app.use(express.json());
+
+// Compile the JSON schema
+const validate = ajv.compile(usersSchema);
 
 /** IN-N-Out-Books Favicon Setup and static files setup
  ** ------------------------------------------------------------------------------- */
@@ -206,7 +239,7 @@ apiRouter.put("/books/:id", (req, res) => {
 });
 
 
-/** IN-N-Out-Books: Login API routes
+/** IN-N-Out-Books: Login API route
  ** ------------------------------------------------------------------------------- */
 
 // Handles site logins @ route -> [ http://localhost:3000/api/login ]
@@ -245,6 +278,55 @@ apiRouter.post("/login", async (req, res) => {
     // Handle any unexpected errors
     return res.status(500).json({
       message: 'Internal Server Error'
+    });
+
+  }
+});
+
+
+/** IN-N-Out-Books: Security Question API route
+ ** ------------------------------------------------------------------------------- */
+
+// Handled verification of a user's security questions
+apiRouter.post('/users/:email/verify-security-question', async (req, res) => {
+  try {
+    const
+    { email } = req.params,
+
+    // Expecting an array of answers in the request body
+    { answers } = req.body;
+
+    // Validate the request body using AJV
+    const valid = validate(req.body);
+
+    if (!valid) return res.status(400).json({
+      error: 'Bad Request'
+    });
+
+    // Find the user by email
+    const user = await users.findOne({ email });
+
+    if (!user) return res.status(401).json({
+      error: 'Unauthorized'
+    });
+
+    // Compare the provided answers with the user's stored answers
+    for (let i = 0; i < answers.length; i++) {
+      if (answers[i].answer !== user.securityQuestions[i].answer) return res.status(401).json({
+        error: 'Unauthorized'
+      });
+    }
+
+    // If all answers match, return success
+    return res.status(200).json({
+      message: 'Security questions successfully answered'
+    });
+
+  } catch (error) {
+
+    // Handle any unexpected errors
+    return res.status(500).json({
+      error: 'Internal Server Error'
     });
 
   }

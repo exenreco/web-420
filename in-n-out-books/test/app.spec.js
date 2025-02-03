@@ -153,3 +153,52 @@ describe("Chapter 6: API Tests", () => {
   });
 
 });
+
+
+describe("Chapter 7: API Tests", () => {
+  test("should return a 200 status with 'Security questions successfully answered' message", async () => {
+    const response = await request(app)
+      .post('/api/users/harry@hogwarts.edu/verify-security-question')
+      .send({
+        answers: [
+          { answer: 'Hedwig' },
+          { answer: 'Quidditch Through the Ages' },
+          { answer: 'Evans' }
+        ]
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Security questions successfully answered');
+  });
+
+  test("should return a 400 status code with 'Bad Request' message when the request body fails AJV validation", async () => {
+    const response = await request(app)
+      .post('/api/users/harry@hogwarts.edu/verify-security-question')
+      .send({
+        answers: [
+          { wrongProperty: 'Hedwig' }, // Invalid property
+          { answer: 'Quidditch Through the Ages' },
+          { answer: 'Evans' }
+        ]
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Bad Request');
+  });
+
+  test("should return a 401 status code with 'Unauthorized' message when the security questions are incorrect", async () => {
+    const response = await request(app)
+      .post('/api/users/harry@hogwarts.edu/verify-security-question')
+      .send({
+        answers: [
+          { answer: 'Scabbers' }, // Incorrect answer
+          { answer: 'Hogwarts: A History' },
+          { answer: 'Wilkins' }
+        ]
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe('Unauthorized');
+  });
+
+});
