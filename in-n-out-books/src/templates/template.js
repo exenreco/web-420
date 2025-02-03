@@ -329,14 +329,15 @@ const Template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
 
   return {
     // returns the template as a string
-    get_template: ()=>html,
+    get_template: () => html,
 
     // return the given options
     get_options: () => options,
 
     //log the generated template
-    log_template: ()=>console.log(html)
+    log_template: () => console.log(html),
   };
+
 };
 
 // export template module

@@ -13,7 +13,7 @@
   --header-links-hovered: blue;
 
   --site-background: #e0e1dd;
-  --page-background: rgba(255, 255, 255, 0.08);
+  --page-background: rgba(255, 255, 255, 0.2);
   --header-background: #0d1b2a;
   --footer-background: #1b263b;
 }
@@ -68,7 +68,9 @@ p{
   font-size: 1.2rem;
   line-height: 1.4rem;
 }
-
+strong {
+  font-weight: bolder;
+}
 small{
   font-size: 0.8rem;
 }
@@ -208,7 +210,7 @@ html > .page .site-header .header-nav .nav-link:hover {
 
 /* Style rules governing site footer
 ---------------------------------------------------*/
-html > .page.home .site-footer {
+html > .page .site-footer {
   height: auto;
   min-height: 85px;
   display: flex;
@@ -221,54 +223,78 @@ html > .page.home .site-footer {
   color: var(--footer-text, #fff);
   background-color: var(--footer-background, #333);
 }
-html > .page.home .site-footer .copyright {
+html > .page .site-footer .copyright {
   text-align: center;
 }
-html > .page.home .site-footer a,
-html > .page.home .site-footer a:link,
-html > .page.home .site-footer a:visited,
-html > .page.home .site-footer a:active {
+html > .page .site-footer a,
+html > .page .site-footer a:link,
+html > .page .site-footer a:visited,
+html > .page .site-footer a:active {
   text-decoration: none;
   color: var(--footer-links, #fff);
 }
-html > .page.home .site-footer a:hover {
+html > .page .site-footer a:hover {
   color: var(--footer-links-hovered, blue);
 }
 
 
 /* Style rules governing all pages
 ---------------------------------------------------*/
-html > .page.home .site-content {
+html > .page .site-content {
   margin: auto;
   height: auto;
-  width: 1080px;
+  width: auto;
+  max-width: 1080px;
+  min-width: 25px;
+  min-height: 82vh;
   color: var(--page-text, #333);
   background-color: var(--page-background, rgba(33, 33, 33, 0.05));
 }
-html > .page.home .site-content a,
-html > .page.home .site-content a:link,
-html > .page.home .site-content a:visited,
-html > .page.home .site-content a:active {
+html > .page .site-content a,
+html > .page .site-content a:link,
+html > .page .site-content a:visited,
+html > .page .site-content a:active {
   color: var(--page-links, blue);
 }
-html > .page.home .site-content a:hover {
+html > .page .site-content a:hover {
   color: var(--page-links-hovered, red);
 }
-html > .page.home .site-content .page-section {
+html > .page .site-content .page-section {
   padding: 12px;
   margin-bottom: 18px;
 }
-html > .page.home .site-content .page-section .title {
+html > .page .site-content .page-section .title {
   font-size: 1.2rem;
   text-decoration: underline;
 }
-html > .page.home .site-content  {
+html > .page .site-content  {
   margin-bottom: 40px;
 }
 
+/* Style rules governing 404 page
+---------------------------------------------------*/
+html > .page._404 .site-content {
+  padding: 10px;
+  display: flex;
+  flex: 1 1 auto;
+  margin-top: 20px;
+  min-height: 20vh;
+  margin-bottom: 62vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+html > .page._404 .site-content .title {
+  text-decoration: underline;
+}
 
 /* Style rules governing home page
 ---------------------------------------------------*/
+html > .page.home .site-content {
+  min-height: auto;
+  padding-top: 14px;
+  margin-bottom: 40px;
+}
 html > .page.home .splash-screen {
   margin: auto;
   height: 50vh;
@@ -297,8 +323,4 @@ html > .page.home .splash-screen .about .info {
   font-size: 2rem;
   line-height: 2rem;
   text-align: center;
-}
-html > .page.home .site-content {
-  padding-top: 14px;
-  margin-bottom: 40px;
 }

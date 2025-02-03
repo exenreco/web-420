@@ -42,3 +42,39 @@ describe("Chapter 3: API Tests", () => {
   });
 
 });
+
+describe("Chapter 4: API Tests", () => {
+
+  test("Should return a 201-status code when adding a new book", async () => {
+    const
+    newBook   = { id: 1, title: "New Book", author: "John Doe" },
+    response  = await request(app).post("/api/books").send(newBook);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toMatchObject(newBook);
+  });
+
+  test("Should return a 400-status code when adding a new book with missing title", async () => {
+    const
+    newBook   = { id: 2, author: "Jane Doe" }, // Missing title
+    response  = await request(app).post("/api/books").send(newBook);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error", "Book title is required.");
+  });
+
+  test("Should return a 204-status code when deleting a book", async () => {
+    const bookId = 1;
+
+    // First, add a test book to delete
+    await request(app)
+      .post("/api/books")
+      .send({ id: bookId, title: "To Delete", author: "Author" });
+
+    // Delete the test book
+    const response = await request(app).delete(`/api/books/${bookId}`);
+
+    expect(response.status).toBe(204);
+  });
+
+});
