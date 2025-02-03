@@ -67,11 +67,8 @@ app = express(),
 bookApiRouter = express.Router();
 
 
-
-
 // get server response as json
 app.use(express.json());
-
 
 /** IN-N-Out-Books Favicon Setup and static files setup
  ** ------------------------------------------------------------------------------- */
@@ -82,30 +79,28 @@ app.use( express.static( path.join( process.cwd(), "src", "public" ) ) );
 // Serve app favicon
 app.use( favicon(path.join( process.cwd(), "src", "public/images/", "favicon.ico" ) ) );
 
-
-
-/** IN-N-Out-Books: Home page route -> http://localhost:3000/
+/** IN-N-Out-Books: Home page route @ -> http://localhost:3000/
  ** ------------------------------------------------------------------------------- */
 app.get('/', (req, res) => {
   res.send( homePage.get_template() );
 } );
 
-
-
 /** IN-N-Out-Books: Books API routes
  ** ------------------------------------------------------------------------------- */
 
-// Handles fetching all books -> [ http://localhost:3000/api/books ]
+// Handles fetching all books @ -> [ http://localhost:3000/api/books ]
 bookApiRouter.get("/books", async (req, res) => {
   try {
     const allBooks = await books.find();
     res.json(allBooks);
   } catch (error) {
+
     res.status(500).json({ error: "Internal Server Error" });
+
   }
 });
 
-// Handles fetching a single book by id -> [ http://localhost:3000/api/books/:id ]
+// Handles fetching a single book by id @ -> [ http://localhost:3000/api/books/:id ]
 bookApiRouter.get("/books/:id", async (req, res) => {
   try {
     const bookId = parseInt(req.params.id, 10);
@@ -121,11 +116,13 @@ bookApiRouter.get("/books/:id", async (req, res) => {
     : res.status(404).json({ error: "Book not found" });
 
   } catch (error) {
+
     res.status(500).json({ error: "Internal Server Error" });
+
   }
 });
 
-// Handles adding a single book -> [ http://localhost:3000/api/books]
+// Handles adding a single book @ -> [ http://localhost:3000/api/books]
 bookApiRouter.post("/books", async (req, res) => {
   try {
     const { id, title, author } = req.body;
@@ -138,13 +135,15 @@ bookApiRouter.post("/books", async (req, res) => {
     await books.insertOne(newBook);
 
     res.status(201).json(newBook);
+
   } catch (error) {
+
     res.status(500).json({ error: "Internal Server Error" });
+
   }
 });
 
-
-// Handles deleting a single book by id -> [ http://localhost:3000/api/books/:id ]
+// Handles deleting a single book by id @ -> [ http://localhost:3000/api/books/:id ]
 bookApiRouter.delete("/books/:id", async (req, res) => {
   try {
     const bookId = parseInt(req.params.id, 10);
@@ -162,8 +161,39 @@ bookApiRouter.delete("/books/:id", async (req, res) => {
     await books.deleteOne({ id: bookId });
 
     res.status(204).send(); // No content
+
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Handles updating a single book by id @ -> [ http://localhost:3000/api/books/:id ]
+app.put("/api/books/:id", (req, res) => {
+  try {
+    const bookId = parseInt(req.params.id, 10);
+
+    if (isNaN(bookId)) return res.status(400).json({
+      error: "Input must be a number"
+    });
+
+    const { title, author } = req.body;
+
+    if (!title) return res.status(400).json({
+      error: "Bad Request"
+    });
+
+    const result = books.updateOne({ id: bookId }, { title, author });
+
+    if (result.matchedCount === 0) return res.status(404).json({
+      error: "Book not found"
+    });
+
+    res.status(204).send();
+
+  } catch (error) {
+
+    res.status(500).json({ error: "Internal Server Error" });
+
   }
 });
 
