@@ -17,17 +17,23 @@
 /** Module Dependencies
  ** ------------------------------------------------------------------------------- */
 
-// Import Path: handles
+// Import Path
 import path from "path";
+
+// Import bcrypt to compare hashed passwords
+import bcrypt from "bcryptjs";
 
 // Import Express: use to create our server
 import express from "express";
 
-// Import Favicon:
+// Import Favicon
 import favicon from "serve-favicon";
 
 // Import books collection
 import books from "../database/books.js";
+
+// Import mock users data
+import { users , saltRounds } from "../database/users.js";
 
 // Import the site's homepage template
 import homePage from "./templates/home-page.js";
@@ -52,9 +58,8 @@ const
 app = express(),
 
 
-
 /**
- * API ROUTER
+ * Book API ROUTER
  *
  * Handles routes for the book API Endpoint
  *
@@ -64,7 +69,9 @@ app = express(),
  *
  * @Since version 0.0.2
  */
-bookApiRouter = express.Router();
+apiRouter = express.Router();
+
+
 
 
 // get server response as json
@@ -79,17 +86,18 @@ app.use( express.static( path.join( process.cwd(), "src", "public" ) ) );
 // Serve app favicon
 app.use( favicon(path.join( process.cwd(), "src", "public/images/", "favicon.ico" ) ) );
 
-/** IN-N-Out-Books: Home page route @ -> http://localhost:3000/
+/** IN-N-Out-Books: Home page route @ route -> http://localhost:3000/
  ** ------------------------------------------------------------------------------- */
 app.get('/', (req, res) => {
   res.send( homePage.get_template() );
 } );
 
+
 /** IN-N-Out-Books: Books API routes
  ** ------------------------------------------------------------------------------- */
 
-// Handles fetching all books @ -> [ http://localhost:3000/api/books ]
-bookApiRouter.get("/books", async (req, res) => {
+// Handles fetching all books @ route -> [ http://localhost:3000/api/books ]
+apiRouter.get("/books", async (req, res) => {
   try {
     const allBooks = await books.find();
     res.json(allBooks);
@@ -100,8 +108,8 @@ bookApiRouter.get("/books", async (req, res) => {
   }
 });
 
-// Handles fetching a single book by id @ -> [ http://localhost:3000/api/books/:id ]
-bookApiRouter.get("/books/:id", async (req, res) => {
+// Handles fetching a single book by id @ route -> [ http://localhost:3000/api/books/:id ]
+apiRouter.get("/books/:id", async (req, res) => {
   try {
     const bookId = parseInt(req.params.id, 10);
 
@@ -122,8 +130,8 @@ bookApiRouter.get("/books/:id", async (req, res) => {
   }
 });
 
-// Handles adding a single book @ -> [ http://localhost:3000/api/books]
-bookApiRouter.post("/books", async (req, res) => {
+// Handles adding a single book @ route -> [ http://localhost:3000/api/books]
+apiRouter.post("/books", async (req, res) => {
   try {
     const { id, title, author } = req.body;
 
@@ -143,8 +151,8 @@ bookApiRouter.post("/books", async (req, res) => {
   }
 });
 
-// Handles deleting a single book by id @ -> [ http://localhost:3000/api/books/:id ]
-bookApiRouter.delete("/books/:id", async (req, res) => {
+// Handles deleting a single book by id @ route -> [ http://localhost:3000/api/books/:id ]
+apiRouter.delete("/books/:id", async (req, res) => {
   try {
     const bookId = parseInt(req.params.id, 10);
 
@@ -167,8 +175,8 @@ bookApiRouter.delete("/books/:id", async (req, res) => {
   }
 });
 
-// Handles updating a single book by id @ -> [ http://localhost:3000/api/books/:id ]
-app.put("/api/books/:id", (req, res) => {
+// Handles updating a single book by id @ route -> [ http://localhost:3000/api/books/:id ]
+apiRouter.put("/books/:id", (req, res) => {
   try {
     const bookId = parseInt(req.params.id, 10);
 
@@ -198,10 +206,56 @@ app.put("/api/books/:id", (req, res) => {
 });
 
 
+/** IN-N-Out-Books: Login API routes
+ ** ------------------------------------------------------------------------------- */
+
+// Handles site logins @ route -> [ http://localhost:3000/api/login ]
+apiRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if email or password is missing
+    if (!email || !password) return res.status(400).json({
+      message: 'Bad Request: Missing email or password'
+    });
+
+    // Find the user by email
+    const user = await users.findOne({ email });
+
+    // If user is not found, return 401 Unauthorized
+    if (!user) return res.status(401).json({
+      message: 'Unauthorized'
+    });
+
+    // Compare the provided password with the stored hashed password
+    const passwordMatch = bcrypt.compareSync(password, user.password);
+
+    // If passwords do not match, return 401 Unauthorized
+    if (!passwordMatch) return res.status(401).json({
+      message: 'Unauthorized'
+    });
+
+    // If credentials are correct, return 200 with success message
+    return res.status(200).json({
+      message: 'Authentication successful'
+    });
+
+  } catch (error) {
+
+    // Handle any unexpected errors
+    return res.status(500).json({
+      message: 'Internal Server Error'
+    });
+
+  }
+});
+
 
 /** IN-N-Out-Books: API route mount
  ** ------------------------------------------------------------------------------- */
-app.use("/api", bookApiRouter);
+
+// Handles API routes
+app.use("/api", apiRouter);
 
 
 
@@ -216,7 +270,6 @@ app.use((err, req, res, next) => res.status(500).json({
   message: "Internal Server Error",
   error: process.env.NODE_ENV === "development" ? err.stack : {},
 }));
-
 
 
 // Export the Express application

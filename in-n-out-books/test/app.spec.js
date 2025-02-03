@@ -117,3 +117,39 @@ describe("Chapter 5: API Tests", () => {
   });
 
 });
+
+describe("Chapter 6: API Tests", () => {
+
+  test("should log a user in and return a 200-status with 'Authentication successful' message", async () => {
+    const response = await request(app)
+      .post('/api/login')
+      .send({ email: 'harry@hogwarts.edu', password: 'potter' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Authentication successful');
+  });
+
+  test("should return a 401-status code with 'Unauthorized' message when logging in with incorrect credentials", async () => {
+    const response = await request(app)
+      .post('/api/login')
+      .send({ email: 'harry@hogwarts.edu', password: 'wrongpassword' });
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe('Unauthorized');
+  });
+
+  test("should return a 400-status code with 'Bad Request' when missing email or password", async () => {
+    const response1 = await request(app)
+      .post('/api/login')
+      .send({ email: 'harry@hogwarts.edu' }); // Missing password
+    expect(response1.status).toBe(400);
+    expect(response1.body.message).toBe('Bad Request: Missing email or password');
+
+    const response2 = await request(app)
+      .post('/api/login')
+      .send({ password: 'potter' }); // Missing email
+    expect(response2.status).toBe(400);
+    expect(response2.body.message).toBe('Bad Request: Missing email or password');
+  });
+
+});
