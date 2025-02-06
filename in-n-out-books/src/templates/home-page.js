@@ -27,6 +27,15 @@ import Template from "./template.js";
 
 const
 /**
+ * Defines the site header
+ */
+siteHeader = Header([
+  {text: 'Home', class:'active', location: '/'},
+  {text: 'Books', location: '/books'},
+  {text: 'Docs', location: '/docs'},
+]),
+
+/**
  * INTRO
  *
  * Stores a block of html source code to use as
@@ -147,7 +156,7 @@ homePage = Template('In-N-Out-Books', {
   // generate page header title
   'page': {
     title:'Home',
-    hasSiteTitle:true
+    hasSiteTitle: true
   },
 
   // generate meta tags
@@ -204,7 +213,7 @@ homePage = Template('In-N-Out-Books', {
 
     // adds content to the body tag
     content: (() => `
-      ${Header}
+      ${siteHeader}
       ${intro}
       <main class="site-content">
         ${topSellingBooks}

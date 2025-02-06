@@ -130,15 +130,15 @@ const Template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
 
   // Process page lang options
 
-  if( options && 'lang' in options && options.lang instanceof String ) {
+  if( options && 'lang' in options && typeof options.lang === 'string' ) {
     mapHtml.set('lang', `${options.lang}`);
   }
 
 
   // Process page title options
 
-  if( options && 'page' in options && options.page instanceof Object ) {
-    if( 'hasSiteTitle' in options.page && options.page.hasSiteTitle instanceof Boolean)
+  if( options && 'page' in options && typeof options.page === 'object' ) {
+    if( 'hasSiteTitle' in options.page && typeof options.page.hasSiteTitle === 'boolean')
     {
       mapHtml.set('page', {
         ...mapHtml.get('page'),
@@ -146,7 +146,7 @@ const Template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
       })
     }
 
-    if( 'title' in options.page && options.page.title instanceof String)
+    if( 'title' in options.page && typeof options.page.title === 'string')
     {
       let hasSiteTitle = mapHtml.get('page')['hasSiteTitle']
       if( hasSiteTitle && hasSiteTitle === false ) {
@@ -315,7 +315,7 @@ const Template = ( siteTitle = 'In-N-Out-Books', options = {} ) => {
     <html lang="${mapHtml.get('lang')}">
       <head>
           ${metaTags}
-          <title>${mapHtml.get('page').title}</title>
+          <title id="browser-title">${mapHtml.get('page').title}</title>
           ${styleTags}
           ${scriptTags}
       </head>

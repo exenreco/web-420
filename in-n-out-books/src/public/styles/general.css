@@ -63,12 +63,28 @@ h6{
   font-size: 0.8rem;
   line-height: 1rem;
 }
-
+hr{
+  height: 4px;
+  border: none;
+  outline: none;
+  opacity: 0.55;
+  background: #333;
+  background-color: #333;
+  width: calc(100%);
+  margin: 32px auto 32px auto;
+}
 p{
   font-size: 1.2rem;
   line-height: 1.4rem;
 }
-strong {
+code{
+  font-family: Consolas,"courier new";
+  color: crimson;
+  background-color: #f1f1f1;
+  padding: 2px;
+  font-size: 105%;
+}
+strong{
   font-weight: bolder;
 }
 small{
@@ -323,4 +339,249 @@ html > .page.home .splash-screen .about .info {
   font-size: 2rem;
   line-height: 2rem;
   text-align: center;
+}
+
+/* Style rules governing list all books view
+---------------------------------------------------*/
+html > .page.all-books .book-list {
+  width: auto;
+  margin: auto;
+  max-width: 98%;
+  min-width: 95%;
+}
+html > .page.all-books .book-list .book-item {
+  margin: 24px 0px 24px 0px;
+  background: rgba(65, 90, 119, 0.02);
+}
+html > .page.all-books .book-list .book-item .container {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: start;
+  flex-direction: row;
+  justify-items: start;
+  justify-content: left;
+}
+html > .page.all-books .book-list .book-item .container .cover,
+html > .page.all-books .book-list .book-item .container .info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  position: relative;
+  flex-direction: column;
+}
+html > .page.all-books .book-list .book-item .container .cover {
+  margin: 12px;
+  width: 185px;
+  height: auto;
+  flex-wrap: nowrap;
+  text-align: center;
+  flex-direction: row;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  background: rgba(33, 33, 33, 0.09);
+}
+html > .page.all-books .book-list .book-item .container .cover img,
+html > .page.all-books .book-list .book-item .container .cover i {
+  width: 180px;
+  height: auto;
+  padding: 8px;
+  max-height: 280px;
+  min-height: 180px;
+  flex-wrap: nowrap;
+  text-align: center;
+  flex-direction: row;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+}
+html > .page.all-books .book-list .book-item .container .info {
+  height: auto;
+  text-align: left;
+  flex-wrap: nowrap;
+  align-items: start;
+  justify-items: left;
+  justify-content: left;
+  flex-direction: column;
+  margin: 5px 0px 5px 0px;
+  width: calc( 100% - 185px );
+}
+html > .page.all-books .book-list .book-item .container .info .title {
+  font-size: 1.4rem;
+}
+html > .page.all-books .book-list .book-item .container .info hr {
+  opacity: 0.2;
+  margin: 12px 5px 12px 5px;
+}
+html > .page.all-books .book-list .book-item .container .info .description {
+  padding: 5px;
+  text-align: left;
+  text-indent: 14px;
+  margin-bottom: 20px;
+}
+html > .page.all-books .book-list .book-item .container .info .book-nav {
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex: 1 1 auto;
+  position: relative;
+  justify-content: right;
+}
+html > .page.all-books .book-list .book-item .container .info .book-nav .book-link,
+html > .page.all-books .book-list .book-item .container .info .book-nav .book-link:link,
+html > .page.all-books .book-list .book-item .container .info .book-nav .book-link:visited,
+html > .page.all-books .book-list .book-item .container .info .book-nav .book-link:active {
+  margin: 8px;
+  font-weight: 600;
+  border-radius: 5px;
+  text-decoration: none;
+  padding: 5px 18px 5px 18px;
+  border: 2px solid #415a77;
+  color: var(--header-links, #ffff);
+  background: var(--header-background, #0d1b2a);
+  transition: all 500ms ease-in-out;
+}
+html > .page.all-books .book-list .book-item .container .info .book-nav .book-link:hover {
+  border: 2px solid var(--header-background, #0d1b2a);
+  color: var(--header-background, #0d1b2a);
+  background: var(--header-links, #ffff);
+  transition: all 500ms ease-in-out;
+}
+
+/* Style rules governing single book view
+---------------------------------------------------*/
+html > .page.single-book .detailed-view {
+  width: auto;
+  margin: auto;
+  display: flex;
+  max-width: 98%;
+  min-width: 95%;
+  flex: 1 1  auto;
+  flex-direction: row;
+}
+html > .page.single-book .detailed-view .cover-container,
+html > .page.single-book .detailed-view .info {
+  margin: 8px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: start;
+  flex-direction: row;
+  justify-items: start;
+  justify-content: left;
+}
+html > .page.single-book .detailed-view .cover-container {
+  width: 320px;
+}
+html > .page.single-book .detailed-view .cover-container img {
+  width: 98%;
+  height: auto;
+  padding: 8px;
+  margin: auto;
+  flex-wrap: nowrap;
+  text-align: center;
+  flex-direction: row;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+}
+html > .page.single-book .detailed-view .info {
+  flex-direction: column;
+  width: calc( 100% - 340px);
+}
+html > .page.single-book .detailed-view .info hr {
+  opacity: 0.2;
+  margin: 12px 5px 12px 5px;
+}
+html > .page.single-book .detailed-view .info .title {
+  font-size: 1.4rem;
+}
+html > .page.single-book .detailed-view .info .book-details li {
+  margin-bottom: 12px;
+}
+
+/* Style rules governing read book view
+---------------------------------------------------*/
+html > .page.read-book .site-content {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 82vh;
+  max-height: 82vh;
+}
+html > .page.read-book .site-content #reader-frame {
+  width: 90%;
+  height: 86vh;
+  margin: auto;
+  display: block;
+  max-width: 100%;
+  min-width: 100%;
+  max-height: 100%;
+  min-height: 100%;
+  position: relative;
+}
+
+/* Style rules governing docs view
+---------------------------------------------------*/
+html > .page.documentation .documentation-view {
+  margin-top: 12px;
+}
+html > .page.documentation .documentation-view .title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 5px;
+}
+html > .page.documentation .documentation-view .red {
+  color: red;
+}
+html > .page.documentation .documentation-view .green {
+  color: green;
+}
+html > .page.documentation .documentation-view strong hr {
+  opacity: 0.5;
+}
+html > .page.documentation .documentation-view table strong {
+  line-height: 18px;
+}
+html > .page.documentation .documentation-view table pre,
+html > .page.documentation .documentation-view table pre code {
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+html > .page.documentation .documentation-view table {
+  width: 98%;
+  margin: auto;
+  margin-top: 12px;
+  border: 1px solid #0d1b2a;
+}
+html > .page.documentation .documentation-view table caption {
+  background-color: #0d1b2a;
+  border: 1px solid #0d1b2a;
+  border-bottom: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: left;
+  padding: 12px;
+  color: #fff;
+}
+html > .page.documentation .documentation-view table th,
+html > .page.documentation .documentation-view table td {
+  font-weight: bold;
+  border: 1px solid #0d1b2a;
+  text-align: left;
+  padding: 12px;
+}
+html > .page.documentation .documentation-view table th {
+  text-align: left;
+}
+html > .page.documentation .documentation-view table td {
+  font-weight: bold;
+  font-size: 1rem;
+}
+html > .page.documentation .documentation-view ul li {
+  margin-bottom: 34px;
 }

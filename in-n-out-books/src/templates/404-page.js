@@ -30,6 +30,15 @@ import Template from "./template.js";
 
 const
 /**
+ * Defines the site header
+ */
+siteHeader = Header([
+  {text: 'Home', location: '/'},
+  {text: 'Books', location: '/books'},
+  {text: 'Docs', location: '/docs'},
+]),
+
+/**
  * INTRO
  *
  * Stores a block of html source code to use as
@@ -136,7 +145,7 @@ _404_page = Template('In-N-Out-Books', {
 
     // adds content to the body tag
     content: (() => `
-      ${Header}
+      ${siteHeader}
       <main class="site-content">
         ${message}
       </main>

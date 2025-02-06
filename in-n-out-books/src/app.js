@@ -29,20 +29,35 @@ import bcrypt from "bcryptjs";
 // Import Express: use to create our server
 import express from "express";
 
+// Import request to make request for site page
+import request from "supertest";
+
 // Import Favicon
 import favicon from "serve-favicon";
 
 // Import books collection
 import books from "../database/books.js";
 
-// Import mock users data
-import { users , saltRounds } from "../database/users.js";
-
 // Import the site's homepage template
 import homePage from "./templates/home-page.js";
 
+// Import the reader template to enable read book
+import readBook from './templates/read-book.js';
+
+// Imports the template to render all books
+import listAllBooks from './templates/all-books.js';
+
+// Imports the api docs template
+import apiDocs from './templates/docs.js';
+
+// Imports the template to render single books
+import singleBook from './templates/single-book.js';
+
 // Import an HTML page that handles 404 errors
-import { _404_page, custom404 } from "./templates/404-page.js";
+import { _404_page } from "./templates/404-page.js";
+
+// Import mock users data
+import { users } from "../database/users.js";
 
 
 
@@ -118,13 +133,6 @@ app.use( express.static( path.join( process.cwd(), "src", "public" ) ) );
 
 // Serve app favicon
 app.use( favicon(path.join( process.cwd(), "src", "public/images/", "favicon.ico" ) ) );
-
-/** IN-N-Out-Books: Home page route @ route -> http://localhost:3000/
- ** ------------------------------------------------------------------------------- */
-app.get('/', (req, res) => {
-  res.send( homePage.get_template() );
-} );
-
 
 /** IN-N-Out-Books: Books API routes
  ** ------------------------------------------------------------------------------- */
@@ -339,6 +347,73 @@ apiRouter.post('/users/:email/verify-security-question', async (req, res) => {
 // Handles API routes
 app.use("/api", apiRouter);
 
+
+/** IN-N-Out-Books: Home page @ route -> http://localhost:3000/
+ *  Handles serving the home page
+ ** ------------------------------------------------------------------------------- */
+app.get('/', (req, res) => {
+  res.send( homePage.get_template() );
+} );
+
+
+/** IN-N-Out-Books: view all books @ route -> http://localhost:3000/books
+ *  Handles listing all books
+ ** ------------------------------------------------------------------------------- */
+app.get('/books', (req, res) => { res.send( listAllBooks.get_template() ); } );
+
+
+/** IN-N-Out-Books: view a single books @ route -> http://localhost:3000/books/:title
+ *  Handles listing all books
+ ** ------------------------------------------------------------------------------- */
+app.get('/books/:title', async (req, res) => {
+  try {
+    const
+    bookTitle = decodeURIComponent(req.params.title), // Decode URL-encoded titles
+    book = await books.findOne({ title: bookTitle });
+
+    if (!book) return res.status(404).send(
+      `<h1>Book Not Found</h1><p>No book found with title "${bookTitle}".</p>`
+    );
+
+    res.send(singleBook.get_template());
+
+  } catch (error) {
+    res.status(500).send('<h1>Internal Server Error</h1><p>Something went wrong.</p>');
+  }
+});
+
+/** IN-N-Out-Books: view a single books with query @ route -> http://localhost:3000/books/?title=:title
+ *  Handles listing all books
+ ** ------------------------------------------------------------------------------- */
+app.get('/api/books/?title=:title', async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    if (!title) return res.status(400).json({
+      error: "Title query parameter is required"
+    });
+
+    const book = await books.findOne({ title }); // Ensure fetches only ONE book
+
+    return book
+      ? res.json(book)
+      : res.status(404).json({ error: "Book not found" });
+
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+/** IN-N-Out-Books: read a single books @ route -> http://localhost:3000/books/:title/read
+ *  Handles listing all books
+ ** ------------------------------------------------------------------------------- */
+app.get('/books/:title/read', (req, res) => { res.send( readBook.get_template() ); } );
+
+/** IN-N-Out-Books: read a single books @ route -> http://localhost:3000/books/:title/read
+ *  Handles listing all books
+ ** ------------------------------------------------------------------------------- */
+app.get('/docs', (req, res) => { res.send( apiDocs.get_template() ); } );
 
 
 /** IN-N-Out-Books: Middlewares

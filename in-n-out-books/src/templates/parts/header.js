@@ -16,8 +16,38 @@
  * the header on the inn-n-out-books website.
  *
  */
-const Header = (() => `
-  <header class="site-header">
+const Header = ( links = [{location: '', class: '', text: ''}] ) => {
+
+  // checks for site links
+  if( ! links || ! links instanceof Object) throw Error(`
+    Expected links to be an array of objects, ${typeof(links)} was given.
+  `)
+
+  let navItems = '';
+
+  links.forEach((link, index) => {
+    if( link && link instanceof Object ) {
+      const
+
+      location = ('location' in link && typeof link.location === 'string' )
+      ? (() => `href="${link.location}"`)()
+      : '',
+
+      classAttr = ('class' in link && typeof link.class === 'string' )
+      ? (() =>`class="nav-link ${link.class}"`)()
+      : 'class="nav-link"',
+
+      text = ('text' in link && typeof link.text === 'string' )
+      ? (() => `${link.text}`)()
+      : '';
+
+      // append link tag
+      navItems += `<a ${location} ${classAttr} >${text}</a>`;
+    }
+  });
+
+
+  const head = (() => `<header class="site-header">
     <div class="info">
       <div class="logo">
         <img src="/images/logo.png" alt="in-n-out-book logo">
@@ -38,11 +68,12 @@ const Header = (() => `
       </section>
     </div>
     <nav class="header-nav">
-      <a class="nav-link active" href="/">Home</a>
-      <a class="nav-link" href="#books">Books</a>
+      ${(() => navItems)()}
     </nav>
-  </header>
-`)();
+  </header>`)();
+
+  return head;
+};
 
 // Export the site header
 export default Header;
