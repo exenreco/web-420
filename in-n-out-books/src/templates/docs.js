@@ -15,8 +15,11 @@
  * Module dependencies.
  */
 
-// import hljs for code highlights
-import hljs from "highlight.js";
+// for code syntax
+import Prism from 'prismjs';
+
+// Import Template: use to generate HTML content
+import Template from "./template.js";
 
 // Import the site header js
 import Header from "./parts/header.js";
@@ -24,11 +27,9 @@ import Header from "./parts/header.js";
 // Import the site footer js
 import Footer from "./parts/footer.js";
 
-// Import Template: use to generate HTML content
-import Template from "./template.js";
-
 
 const
+
 /**
  * Defines the site header
  */
@@ -37,83 +38,6 @@ siteHeader = Header([
   {text: 'Books', location: '/books'},
   {text: 'Docs', location: '/docs'},
 ]),
-
-fetchSingle = (() => `
-  // fetching a single book
-  async () => {
-    const book1 = await fetch('https://site-name/api/books/1');
-  };
-`)(),
-
-singleExpected = (() => `
-  // Expect book to be:
-  {
-    id:           '1',
-    title:        'Sample book',
-    cover:        'https://sample-book-cover.jpeg',
-    author:       'Susan Bell',
-    source:       'https://link-to-book.pdf',
-    description:  'Talks about sample book'
-  }
-`)(),
-
-fetchAll = (() => `
-  // fetching all books
-  async () => {
-    const books = await fetch('https://site-name/api/books/');
-  };
-`)(),
-
-allExpected = (() => `
-  // Expect books to be:
-  [{
-    id:           '1',
-    title:        'Sample book',
-    cover:        'https://sample-book-cover.jpeg',
-    author:       'Susan Bell',
-    source:       'https://link-to-book.pdf',
-    description:  'Talks about sample book'
-  },
-  {
-    id:           '2',
-    title:        'Sample book 2',
-    cover:        'https://sample-book2-cover.jpeg',
-    author:       'Anthony Bell',
-    source:       'https://link-to-book2.pdf',
-    description:  'About sample 2 book'
-  }, ... ]
-`)(),
-
-addingBook = (() => `
-  await fetch('https://site-name/api/books/', {
-    method: 'POST',
-    mode: 'cors',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      id:           '1',
-      title:        'Sample book',
-      cover:        'https://sample-book-cover.jpeg',
-      author:       'Susan Bell',
-      source:       'https://link-to-book.pdf',
-      description:  'Talks about sample book'
-    })
-  });
-  return response.json();
-`)(),
-
-addingBookExpected = (() => `
-  // When valid expect a 201-status code
-  // When no provided title expect 400-status
-`)(),
-
-codeBlocks = {
-  fetchAll: hljs.highlight(fetchAll, { language: "javascript" }).value,
-  fetchSingle: hljs.highlight(fetchSingle, { language: "javascript" }).value,
-  singleExpected: hljs.highlight(singleExpected, { language: "javascript" }).value,
-  allExpected: hljs.highlight(allExpected, { language: "javascript" }).value,
-  addingBook: hljs.highlight(addingBook, { language: "javascript" }).value,
-  addingBookExpected: hljs.highlight(addingBookExpected, { language: "javascript" }).value,
-},
 
 /**
  * Single BOOKS template
@@ -155,32 +79,29 @@ apiDocs = Template('In-N-Out-Books', {
     // link general stylesheet
     {atts: { rel: 'stylesheet', type: 'text/css', href: '/styles/general.css' } },
 
-    // link highlight js
+    // link prism js css
     {atts: {
       rel: 'stylesheet',
       type: 'text/css',
-      href: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css' }
+      href: 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.0/themes/prism.min.css' }
     },
   ],
 
   // generates site scripts
   'scripts': [
+    // link prism js
     {atts: {
       id: 'highlight-js',
       type: 'text/javaScript',
       defer:  true,
-      src: "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js",
+      src: "https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.0/prism.min.js",
     }},
     {atts: {
       id: 'highlight-init',
       type: 'text/javaScript',
       defer:  true,
-    }, content: `
-      // Apply syntax highlighting
-      document.addEventListener(
-        "DOMContentLoaded",
-        () => hljs.highlightAll()
-      );`},
+      src: '/scripts/docs-view.js'
+    }},
   ],
 
   // generate html body tag
@@ -211,13 +132,9 @@ apiDocs = Template('In-N-Out-Books', {
                 <tr>
                   <td colspan="2">
                     <strong>Usage:</strong><br>
-                    <pre><code>
-                      ${codeBlocks.fetchSingle}
-                    </code></pre><br>
+                    <div id="book-request"></div><br>
                     <strong>Expected Results:</strong><br>
-                    <pre><code>
-                      ${codeBlocks.singleExpected}
-                    </code></pre>
+                    <div id="book-expected"></div>
                   </td>
                 </tr>
               </table>
@@ -236,14 +153,10 @@ apiDocs = Template('In-N-Out-Books', {
                 <tr>
                   <td colspan="2">
                     <strong>Usage:</strong><br>
-                    <pre><code>
-                      ${codeBlocks.fetchAll}
-                    </code></pre><br>
+                    <div id="books-request"></div><br>
 
                     <strong>Expected Results:</strong><br>
-                    <pre><code>
-                      ${codeBlocks.allExpected}
-                    </code></pre>
+                    <div id="books-expected"></div>
                   </td>
                 </tr>
               </table>
@@ -262,14 +175,10 @@ apiDocs = Template('In-N-Out-Books', {
                 <tr>
                   <td colspan="2">
                     <strong>Usage:</strong><br>
-                    <pre><code>
-                      ${codeBlocks.addingBook}
-                    </code></pre><br>
+                    <div id="add-book-request"></div><br>
 
                     <strong>Expected Results:</strong><br>
-                    <pre><code>
-                      ${codeBlocks.addingBookExpected}
-                    </code></pre>
+                    <div id="add-book-expected"></div>
                   </td>
                 </tr>
               </table>

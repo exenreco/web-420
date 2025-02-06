@@ -18,9 +18,9 @@
     "ajv": "^8.17.1",
     "bcryptjs": "^2.4.3",
     "express": "^4.21.2",
-    "highlight.js": "^11.11.1",
     "http-errors": "^2.0.0",
     "pdfjs-dist": "^4.10.38",
+    "prismjs": "^1.29.0",
     "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
